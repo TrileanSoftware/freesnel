@@ -4,25 +4,12 @@
  */
 import { getInjectable } from "@ogre-tools/injectable";
 import { computed } from "mobx";
-import selectedUpdateChannelInjectable from "../../../common/application-update/selected-update-channel/selected-update-channel.injectable";
-import appVersionInjectable from "../../../common/get-configuration-file-model/app-version/app-version.injectable";
-import { SemVer } from "semver";
 
 const updateCanBeDowngradedInjectable = getInjectable({
   id: "update-can-be-downgraded",
 
   instantiate: (di) => {
-    const selectedUpdateChannel = di.inject(selectedUpdateChannelInjectable);
-    const appVersion = di.inject(appVersionInjectable);
-
-    return computed(() => {
-      const semVer = new SemVer(appVersion);
-
-      return (
-        semVer.prerelease[0] !==
-        selectedUpdateChannel.value.get().id
-      );
-    });
+    return computed(() => true);
   },
 });
 

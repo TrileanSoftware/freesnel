@@ -132,3 +132,9 @@ clean: clean-npm clean-extensions
 	rm -rf node_modules
 	rm -rf site
 	rm -rf docs/extensions/api
+
+.PHONY: Appimage
+Appimage: node_modules binaries/client
+	yarn run npm:fix-build-version
+	$(MAKE) build-extensions -B
+	yarn build:linux --linux Appimage --x64

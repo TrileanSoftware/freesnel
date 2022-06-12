@@ -3,6 +3,11 @@
 [![Build Status](https://github.com/lensapp/lens/actions/workflows/test.yml/badge.svg)](https://github.com/lensapp/lens/actions/workflows/test.yml)
 [![Chat on Slack](https://img.shields.io/badge/chat-on%20slack-blue.svg?logo=slack&longCache=true&style=flat)](https://join.slack.com/t/k8slens/shared_invite/zt-198iepl92-EPJsCckkJ~f887vWqJcgGA)
 
+## This Fork
+Thank you for all the hard work at making this possible, but:
+* you should not force an account creation
+* don't be evil
+
 ## The Repository
 
 This repository ("OpenLens") is where Team Lens develops the [Lens IDE](https://k8slens.dev) product together with the community. It is backed by a number of Kubernetes and cloud native ecosystem pioneers. This source code is available to everyone under the [MIT license](./LICENSE).
