@@ -4,6 +4,61 @@ exports[`installing update using tray when started renders 1`] = `
 <body>
   <div>
     <div
+      class="topBar"
+    >
+      <div
+        class="items"
+      >
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
+    <div
       class="Notifications flex column align-flex-end"
     />
   </div>
@@ -13,6 +68,61 @@ exports[`installing update using tray when started renders 1`] = `
 exports[`installing update using tray when started when user checks for updates using tray renders 1`] = `
 <body>
   <div>
+    <div
+      class="topBar"
+    >
+      <div
+        class="items"
+      >
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
     <div
       class="Notifications flex column align-flex-end"
     >
@@ -44,7 +154,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_16"
+            data-testid="close-notification-for-notification_43"
             tabindex="0"
           >
             <span
@@ -65,96 +175,60 @@ exports[`installing update using tray when started when user checks for updates 
 <body>
   <div>
     <div
-      class="Notifications flex column align-flex-end"
+      class="topBar"
     >
       <div
-        class="Animate opacity notification flex info enter"
-        style="--enter-duration: 100ms; --leave-duration: 100ms;"
+        class="items"
       >
-        <div
-          class="box"
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
         >
-          <i
-            class="Icon material focusable"
+          <span
+            class="icon"
+            data-icon-name="home"
           >
-            <span
-              class="icon"
-              data-icon-name="info_outline"
-            >
-              info_outline
-            </span>
-          </i>
-        </div>
-        <div
-          class="message box grow"
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
         >
-          Checking for updates...
-        </div>
-        <div
-          class="box"
-        >
-          <i
-            class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_115"
-            tabindex="0"
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
           >
-            <span
-              class="icon"
-              data-icon-name="close"
-            >
-              close
-            </span>
-          </i>
-        </div>
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
       </div>
       <div
-        class="Animate opacity notification flex info enter"
-        style="--enter-duration: 100ms; --leave-duration: 100ms;"
-      >
-        <div
-          class="box"
-        >
-          <i
-            class="Icon material focusable"
-          >
-            <span
-              class="icon"
-              data-icon-name="info_outline"
-            >
-              info_outline
-            </span>
-          </i>
-        </div>
-        <div
-          class="message box grow"
-        >
-          Download for version some-version started...
-        </div>
-        <div
-          class="box"
-        >
-          <i
-            class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_118"
-            tabindex="0"
-          >
-            <span
-              class="icon"
-              data-icon-name="close"
-            >
-              close
-            </span>
-          </i>
-        </div>
-      </div>
+        class="items"
+      />
     </div>
-  </div>
-</body>
-`;
-
-exports[`installing update using tray when started when user checks for updates using tray when new update is discovered when download fails renders 1`] = `
-<body>
-  <div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
     <div
       class="Notifications flex column align-flex-end"
     >
@@ -186,7 +260,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_183"
+            data-testid="close-notification-for-notification_181"
             tabindex="0"
           >
             <span
@@ -226,7 +300,171 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_186"
+            data-testid="close-notification-for-notification_184"
+            tabindex="0"
+          >
+            <span
+              class="icon"
+              data-icon-name="close"
+            >
+              close
+            </span>
+          </i>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`installing update using tray when started when user checks for updates using tray when new update is discovered when download fails renders 1`] = `
+<body>
+  <div>
+    <div
+      class="topBar"
+    >
+      <div
+        class="items"
+      >
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+        <button
+          class="updateButton"
+          data-testid="update-button"
+          data-warning-level="light"
+          id="update-lens-button"
+        >
+          Update
+          <i
+            class="Icon icon material focusable"
+          >
+            <span
+              class="icon"
+              data-icon-name="arrow_drop_down"
+            >
+              arrow_drop_down
+            </span>
+          </i>
+        </button>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
+    <div
+      class="Notifications flex column align-flex-end"
+    >
+      <div
+        class="Animate opacity notification flex info enter"
+        style="--enter-duration: 100ms; --leave-duration: 100ms;"
+      >
+        <div
+          class="box"
+        >
+          <i
+            class="Icon material focusable"
+          >
+            <span
+              class="icon"
+              data-icon-name="info_outline"
+            >
+              info_outline
+            </span>
+          </i>
+        </div>
+        <div
+          class="message box grow"
+        >
+          Checking for updates...
+        </div>
+        <div
+          class="box"
+        >
+          <i
+            class="Icon close material interactive focusable"
+            data-testid="close-notification-for-notification_268"
+            tabindex="0"
+          >
+            <span
+              class="icon"
+              data-icon-name="close"
+            >
+              close
+            </span>
+          </i>
+        </div>
+      </div>
+      <div
+        class="Animate opacity notification flex info enter"
+        style="--enter-duration: 100ms; --leave-duration: 100ms;"
+      >
+        <div
+          class="box"
+        >
+          <i
+            class="Icon material focusable"
+          >
+            <span
+              class="icon"
+              data-icon-name="info_outline"
+            >
+              info_outline
+            </span>
+          </i>
+        </div>
+        <div
+          class="message box grow"
+        >
+          Download for version some-version started...
+        </div>
+        <div
+          class="box"
+        >
+          <i
+            class="Icon close material interactive focusable"
+            data-testid="close-notification-for-notification_271"
             tabindex="0"
           >
             <span
@@ -266,7 +504,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_191"
+            data-testid="close-notification-for-notification_277"
             tabindex="0"
           >
             <span
@@ -286,6 +524,79 @@ exports[`installing update using tray when started when user checks for updates 
 exports[`installing update using tray when started when user checks for updates using tray when new update is discovered when download succeeds renders 1`] = `
 <body>
   <div>
+    <div
+      class="topBar"
+    >
+      <div
+        class="items"
+      >
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+        <button
+          class="updateButton"
+          data-testid="update-button"
+          data-warning-level="light"
+          id="update-lens-button"
+        >
+          Update
+          <i
+            class="Icon icon material focusable"
+          >
+            <span
+              class="icon"
+              data-icon-name="arrow_drop_down"
+            >
+              arrow_drop_down
+            </span>
+          </i>
+        </button>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
     <div
       class="Notifications flex column align-flex-end"
     >
@@ -317,7 +628,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_266"
+            data-testid="close-notification-for-notification_335"
             tabindex="0"
           >
             <span
@@ -357,77 +668,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_269"
-            tabindex="0"
-          >
-            <span
-              class="icon"
-              data-icon-name="close"
-            >
-              close
-            </span>
-          </i>
-        </div>
-      </div>
-      <div
-        class="Animate opacity notification flex info enter"
-        style="--enter-duration: 100ms; --leave-duration: 100ms;"
-      >
-        <div
-          class="box"
-        >
-          <i
-            class="Icon material focusable"
-          >
-            <span
-              class="icon"
-              data-icon-name="info_outline"
-            >
-              info_outline
-            </span>
-          </i>
-        </div>
-        <div
-          class="message box grow"
-        >
-          <div
-            class="flex column gaps"
-            data-testid="ask-boolean-some-irrelevant-random-id"
-          >
-            <b>
-              Update Available
-            </b>
-            <p>
-              Version some-version of Lens IDE is available and ready to be installed. Would you like to update now?
-
-Lens should restart automatically, if it doesn't please restart manually. Installed extensions might require updating.
-            </p>
-            <div
-              class="flex gaps row align-left box grow"
-            >
-              <button
-                class="Button light"
-                data-testid="ask-boolean-some-irrelevant-random-id-button-yes"
-                type="button"
-              >
-                Yes
-              </button>
-              <button
-                class="Button active outlined"
-                data-testid="ask-boolean-some-irrelevant-random-id-button-no"
-                type="button"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          class="box"
-        >
-          <i
-            class="Icon close material interactive focusable"
-            data-testid="close-notification-for-ask-boolean-for-some-irrelevant-random-id"
+            data-testid="close-notification-for-notification_338"
             tabindex="0"
           >
             <span
@@ -447,6 +688,61 @@ Lens should restart automatically, if it doesn't please restart manually. Instal
 exports[`installing update using tray when started when user checks for updates using tray when no new update is discovered renders 1`] = `
 <body>
   <div>
+    <div
+      class="topBar"
+    >
+      <div
+        class="items"
+      >
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+      />
+      <div
+        class="rightSide"
+      />
+    </div>
     <div
       class="Notifications flex column align-flex-end"
     >
@@ -478,7 +774,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_59"
+            data-testid="close-notification-for-notification_104"
             tabindex="0"
           >
             <span
@@ -518,7 +814,7 @@ exports[`installing update using tray when started when user checks for updates 
         >
           <i
             class="Icon close material interactive focusable"
-            data-testid="close-notification-for-notification_62"
+            data-testid="close-notification-for-notification_107"
             tabindex="0"
           >
             <span

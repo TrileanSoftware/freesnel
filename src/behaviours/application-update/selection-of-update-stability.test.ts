@@ -4,7 +4,7 @@
  */
 import type { ApplicationBuilder } from "../../renderer/components/test-utils/get-application-builder";
 import { getApplicationBuilder } from "../../renderer/components/test-utils/get-application-builder";
-import quitAndInstallUpdateInjectable from "../../main/electron-app/features/quit-and-install-update.injectable";
+import quitAndInstallUpdateInjectable from "../../main/application-update/quit-and-install-update.injectable";
 import type { RenderResult } from "@testing-library/react";
 import electronUpdaterIsActiveInjectable from "../../main/electron-app/features/electron-updater-is-active.injectable";
 import publishIsConfiguredInjectable from "../../main/application-update/publish-is-configured.injectable";
@@ -19,8 +19,6 @@ import downloadPlatformUpdateInjectable from "../../main/application-update/down
 import selectedUpdateChannelInjectable from "../../common/application-update/selected-update-channel/selected-update-channel.injectable";
 import type { IComputedValue } from "mobx";
 import setUpdateOnQuitInjectable from "../../main/electron-app/features/set-update-on-quit.injectable";
-import type { AskBoolean } from "../../main/ask-boolean/ask-boolean.injectable";
-import askBooleanInjectable from "../../main/ask-boolean/ask-boolean.injectable";
 import showInfoNotificationInjectable from "../../renderer/components/notifications/show-info-notification.injectable";
 import processCheckingForUpdatesInjectable from "../../main/application-update/check-for-updates/process-checking-for-updates.injectable";
 import appVersionInjectable from "../../common/get-configuration-file-model/app-version/app-version.injectable";
@@ -32,7 +30,6 @@ describe("selection of update stability", () => {
   let downloadPlatformUpdateMock: AsyncFnMock<DownloadPlatformUpdate>;
   let setUpdateOnQuitMock: jest.Mock;
   let showInfoNotificationMock: jest.Mock;
-  let askBooleanMock: AsyncFnMock<AskBoolean>;
 
   beforeEach(() => {
     applicationBuilder = getApplicationBuilder();
@@ -43,11 +40,9 @@ describe("selection of update stability", () => {
       downloadPlatformUpdateMock = asyncFn();
       setUpdateOnQuitMock = jest.fn();
       showInfoNotificationMock = jest.fn(() => () => {});
-      askBooleanMock = asyncFn();
 
       rendererDi.override(showInfoNotificationInjectable, () => showInfoNotificationMock);
 
-      mainDi.override(askBooleanInjectable, () => askBooleanMock);
       mainDi.override(setUpdateOnQuitInjectable, () => setUpdateOnQuitMock);
 
       mainDi.override(
@@ -72,7 +67,7 @@ describe("selection of update stability", () => {
 
   describe("when started", () => {
     let rendered: RenderResult;
-    let processCheckingForUpdates: () => Promise<void>;
+    let processCheckingForUpdates: (source: string) => Promise<void>;
 
     beforeEach(async () => {
       rendered = await applicationBuilder.render();
@@ -97,7 +92,7 @@ describe("selection of update stability", () => {
 
         selectedUpdateChannel.setValue(updateChannels.alpha.id);
 
-        processCheckingForUpdates();
+        processCheckingForUpdates("irrelevant");
       });
 
       it('checks updates from update channel "alpha"', () => {
@@ -191,7 +186,7 @@ describe("selection of update stability", () => {
 
       describe("when checking for updates", () => {
         beforeEach(() => {
-          processCheckingForUpdates();
+          processCheckingForUpdates("irrelevant");
         });
 
         describe('when update from "beta" channel is discovered', () => {
@@ -241,7 +236,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(updateChannels.beta, expect.any(Object));
   });
@@ -259,7 +254,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(updateChannels.latest, expect.any(Object));
   });
@@ -273,7 +268,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(
       updateChannels.latest,
@@ -290,7 +285,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(updateChannels.alpha, expect.any(Object));
   });
@@ -304,7 +299,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(updateChannels.beta, expect.any(Object));
   });
@@ -324,7 +319,7 @@ describe("selection of update stability", () => {
 
     const processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
 
-    processCheckingForUpdates();
+    processCheckingForUpdates("irrelevant");
 
     expect(checkForPlatformUpdatesMock).toHaveBeenCalledWith(updateChannels.beta, expect.any(Object));
   });
