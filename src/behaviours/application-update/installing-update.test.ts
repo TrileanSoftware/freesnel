@@ -15,8 +15,9 @@ import asyncFn from "@async-fn/jest";
 import type { DownloadPlatformUpdate } from "../../main/application-update/download-platform-update/download-platform-update.injectable";
 import downloadPlatformUpdateInjectable from "../../main/application-update/download-platform-update/download-platform-update.injectable";
 import setUpdateOnQuitInjectable from "../../main/electron-app/features/set-update-on-quit.injectable";
-import showInfoNotificationInjectable from "../../renderer/components/notifications/show-info-notification.injectable";
 import processCheckingForUpdatesInjectable from "../../main/application-update/check-for-updates/process-checking-for-updates.injectable";
+import { useFakeTime } from "../../common/test-utils/use-fake-time";
+import staticFilesDirectoryInjectable from "../../common/vars/static-files-directory.injectable";
 
 describe("installing update", () => {
   let applicationBuilder: ApplicationBuilder;
@@ -24,19 +25,19 @@ describe("installing update", () => {
   let checkForPlatformUpdatesMock: AsyncFnMock<CheckForPlatformUpdates>;
   let downloadPlatformUpdateMock: AsyncFnMock<DownloadPlatformUpdate>;
   let setUpdateOnQuitMock: jest.Mock;
-  let showInfoNotificationMock: jest.Mock;
 
   beforeEach(() => {
+    useFakeTime("2015-10-21T07:28:00Z");
+
     applicationBuilder = getApplicationBuilder();
 
-    applicationBuilder.beforeApplicationStart(({ mainDi, rendererDi }) => {
+    applicationBuilder.beforeApplicationStart(({ mainDi }) => {
       quitAndInstallUpdateMock = jest.fn();
       checkForPlatformUpdatesMock = asyncFn();
       downloadPlatformUpdateMock = asyncFn();
       setUpdateOnQuitMock = jest.fn();
-      showInfoNotificationMock = jest.fn(() => () => {});
 
-      rendererDi.override(showInfoNotificationInjectable, () => showInfoNotificationMock);
+      mainDi.override(staticFilesDirectoryInjectable, () => "/some-static-files-directory");
 
       mainDi.override(setUpdateOnQuitInjectable, () => setUpdateOnQuitMock);
 
@@ -67,11 +68,19 @@ describe("installing update", () => {
     beforeEach(async () => {
       rendered = await applicationBuilder.render();
 
-      processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(processCheckingForUpdatesInjectable);
+      processCheckingForUpdates = applicationBuilder.dis.mainDi.inject(
+        processCheckingForUpdatesInjectable,
+      );
     });
 
     it("renders", () => {
       expect(rendered.baseElement).toMatchSnapshot();
+    });
+
+    it("shows normal tray icon", () => {
+      expect(applicationBuilder.tray.getIconPath()).toBe(
+        "/some-static-files-directory/icons/trayIconTemplate.png",
+      );
     });
 
     describe("when user checks for updates", () => {
@@ -88,8 +97,10 @@ describe("installing update", () => {
         );
       });
 
-      it("notifies the user that checking for updates is happening", () => {
-        expect(showInfoNotificationMock).toHaveBeenCalledWith("Checking for updates...");
+      it("shows tray icon for checking for updates", () => {
+        expect(applicationBuilder.tray.getIconPath()).toBe(
+          "/some-static-files-directory/icons/trayIconCheckingForUpdatesTemplate.png",
+        );
       });
 
       it("renders", () => {
@@ -98,8 +109,6 @@ describe("installing update", () => {
 
       describe("when no new update is discovered", () => {
         beforeEach(async () => {
-          showInfoNotificationMock.mockClear();
-
           await checkForPlatformUpdatesMock.resolve({
             updateWasDiscovered: false,
           });
@@ -107,8 +116,10 @@ describe("installing update", () => {
           await processCheckingForUpdatesPromise;
         });
 
-        it("notifies the user", () => {
-          expect(showInfoNotificationMock).toHaveBeenCalledWith("No new updates available");
+        it("shows tray icon for normal", () => {
+          expect(applicationBuilder.tray.getIconPath()).toBe(
+            "/some-static-files-directory/icons/trayIconTemplate.png",
+          );
         });
 
         it("does not start downloading update", () => {
@@ -134,8 +145,10 @@ describe("installing update", () => {
           expect(downloadPlatformUpdateMock).toHaveBeenCalled();
         });
 
-        it("notifies the user that download is happening", () => {
-          expect(showInfoNotificationMock).toHaveBeenCalledWith("Download for version some-version started...");
+        it("still shows tray icon for downloading", () => {
+          expect(applicationBuilder.tray.getIconPath()).toBe(
+            "/some-static-files-directory/icons/trayIconCheckingForUpdatesTemplate.png",
+          );
         });
 
         it("renders", () => {
@@ -151,8 +164,10 @@ describe("installing update", () => {
             expect(quitAndInstallUpdateMock).not.toHaveBeenCalled();
           });
 
-          it("notifies the user about failed download", () => {
-            expect(showInfoNotificationMock).toHaveBeenCalledWith("Download of update failed");
+          it("still shows normal tray icon", () => {
+            expect(applicationBuilder.tray.getIconPath()).toBe(
+              "/some-static-files-directory/icons/trayIconTemplate.png",
+            );
           });
 
           it("renders", () => {
@@ -169,8 +184,67 @@ describe("installing update", () => {
             expect(quitAndInstallUpdateMock).not.toHaveBeenCalled();
           });
 
+          it("shows tray icon for update being available", () => {
+            expect(applicationBuilder.tray.getIconPath()).toBe(
+              "/some-static-files-directory/icons/trayIconUpdateAvailableTemplate.png",
+            );
+          });
+
           it("renders", () => {
             expect(rendered.baseElement).toMatchSnapshot();
+          });
+
+          describe("given checking for updates again", () => {
+            beforeEach(() => {
+              downloadPlatformUpdateMock.mockClear();
+
+              processCheckingForUpdates("irrelevant");
+            });
+
+            it("shows tray icon for checking for updates", () => {
+              expect(applicationBuilder.tray.getIconPath()).toBe(
+                "/some-static-files-directory/icons/trayIconCheckingForUpdatesTemplate.png",
+              );
+            });
+
+            describe("when check resolves with same update that is already downloaded", () => {
+              beforeEach(async () => {
+                await checkForPlatformUpdatesMock.resolve({
+                  updateWasDiscovered: true,
+                  version: "some-version",
+                });
+              });
+
+              it("does not re-download the update", () => {
+                expect(downloadPlatformUpdateMock).not.toHaveBeenCalled();
+              });
+
+              it("shows tray icon for update being available", () => {
+                expect(applicationBuilder.tray.getIconPath()).toBe(
+                  "/some-static-files-directory/icons/trayIconUpdateAvailableTemplate.png",
+                );
+              });
+            });
+
+            describe("when check resolves with different update that was previously downloaded", () => {
+              beforeEach(async () => {
+                await checkForPlatformUpdatesMock.resolve({
+                  updateWasDiscovered: true,
+                  version: "some-other-version",
+                });
+              });
+
+              it("downloads the update", () => {
+                expect(downloadPlatformUpdateMock).toHaveBeenCalled();
+              });
+
+              it("shows tray icon for downloading update", () => {
+                expect(applicationBuilder.tray.getIconPath()).toBe(
+                  "/some-static-files-directory/icons/trayIconCheckingForUpdatesTemplate.png",
+                );
+              });
+
+            });
           });
         });
       });

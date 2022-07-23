@@ -124,7 +124,10 @@ class NonInjectedDock extends React.Component<DockProps & Dependencies> {
     if (!isOpen || !selectedTab) return null;
 
     return (
-      <div className={`tab-content ${selectedTab.kind}`} style={{ flexBasis: height }}>
+      <div
+        className={`tab-content ${selectedTab.kind}`}
+        style={{ flexBasis: height }}
+        data-testid={`dock-tab-content-for-${selectedTab.id}`}>
         {this.renderTab(selectedTab)}
       </div>
     );
@@ -161,6 +164,7 @@ class NonInjectedDock extends React.Component<DockProps & Dependencies> {
           <div className={cssNames("toolbar flex gaps align-center box grow", { "pl-0": tabs.length == 0 })}>
             <div className="dock-menu box grow">
               <MenuActions
+                id="menu-actions-for-dock"
                 usePortal
                 triggerIcon={{ material: "add", className: "new-dock-tab", tooltip: "New tab" }}
                 closeOnScroll={false}

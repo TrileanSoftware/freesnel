@@ -3,66 +3,120 @@
 exports[`navigating between routes given route with optional path parameters when navigating to route with path parameters renders 1`] = `
 <div>
   <div
-    class="topBar"
+    class="ClusterManager"
   >
     <div
-      class="items"
+      class="topBar"
     >
-      <i
-        class="Icon material interactive focusable"
-        data-testid="home-button"
-        tabindex="0"
+      <div
+        class="items"
       >
-        <span
-          class="icon"
-          data-icon-name="home"
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
         >
-          home
-        </span>
-      </i>
-      <i
-        class="Icon material interactive disabled focusable"
-        data-testid="history-back"
-      >
-        <span
-          class="icon"
-          data-icon-name="arrow_back"
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
         >
-          arrow_back
-        </span>
-      </i>
-      <i
-        class="Icon material interactive disabled focusable"
-        data-testid="history-forward"
-      >
-        <span
-          class="icon"
-          data-icon-name="arrow_forward"
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
         >
-          arrow_forward
-        </span>
-      </i>
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+      </div>
+      <div
+        class="items"
+      />
     </div>
-    <div
-      class="items"
-    />
-  </div>
-  <div
-    class="StatusBar"
-  >
-    <div
-      class="leftSide"
-    />
-    <div
-      class="rightSide"
-    />
-  </div>
-  <pre>
-    {
+    <main>
+      <div
+        id="lens-views"
+      />
+      <pre>
+        {
   "someParameter": "some-value",
   "someOtherParameter": "some-other-value"
 }
-  </pre>
+      </pre>
+    </main>
+    <div
+      class="HotbarMenu flex column"
+    >
+      <div
+        class="HotbarItems flex column gaps"
+      />
+      <div
+        class="HotbarSelector"
+      >
+        <i
+          class="Icon Icon previous material interactive focusable"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_left"
+          >
+            arrow_left
+          </span>
+        </i>
+        <div
+          class="HotbarIndex"
+        >
+          <div
+            class="badge Badge small clickable"
+            id="hotbarIndex"
+          >
+            0
+          </div>
+        </div>
+        <i
+          class="Icon material interactive focusable"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_right"
+          >
+            arrow_right
+          </span>
+        </i>
+      </div>
+    </div>
+    <div
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+        data-testid="status-bar-left"
+      />
+      <div
+        class="rightSide"
+        data-testid="status-bar-right"
+      />
+    </div>
+  </div>
   <div
     class="Notifications flex column align-flex-end"
   />
@@ -72,62 +126,116 @@ exports[`navigating between routes given route with optional path parameters whe
 exports[`navigating between routes given route without path parameters when navigating to route renders 1`] = `
 <div>
   <div
-    class="topBar"
+    class="ClusterManager"
   >
     <div
-      class="items"
+      class="topBar"
     >
-      <i
-        class="Icon material interactive focusable"
-        data-testid="home-button"
-        tabindex="0"
+      <div
+        class="items"
       >
-        <span
-          class="icon"
-          data-icon-name="home"
+        <i
+          class="Icon material interactive focusable"
+          data-testid="home-button"
+          tabindex="0"
         >
-          home
-        </span>
-      </i>
-      <i
-        class="Icon material interactive disabled focusable"
-        data-testid="history-back"
+          <span
+            class="icon"
+            data-icon-name="home"
+          >
+            home
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-back"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_back"
+          >
+            arrow_back
+          </span>
+        </i>
+        <i
+          class="Icon material interactive disabled focusable"
+          data-testid="history-forward"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_forward"
+          >
+            arrow_forward
+          </span>
+        </i>
+      </div>
+      <div
+        class="items"
+      />
+    </div>
+    <main>
+      <div
+        id="lens-views"
+      />
+      <div>
+        Some component
+      </div>
+    </main>
+    <div
+      class="HotbarMenu flex column"
+    >
+      <div
+        class="HotbarItems flex column gaps"
+      />
+      <div
+        class="HotbarSelector"
       >
-        <span
-          class="icon"
-          data-icon-name="arrow_back"
+        <i
+          class="Icon Icon previous material interactive focusable"
+          tabindex="0"
         >
-          arrow_back
-        </span>
-      </i>
-      <i
-        class="Icon material interactive disabled focusable"
-        data-testid="history-forward"
-      >
-        <span
-          class="icon"
-          data-icon-name="arrow_forward"
+          <span
+            class="icon"
+            data-icon-name="arrow_left"
+          >
+            arrow_left
+          </span>
+        </i>
+        <div
+          class="HotbarIndex"
         >
-          arrow_forward
-        </span>
-      </i>
+          <div
+            class="badge Badge small clickable"
+            id="hotbarIndex"
+          >
+            0
+          </div>
+        </div>
+        <i
+          class="Icon material interactive focusable"
+          tabindex="0"
+        >
+          <span
+            class="icon"
+            data-icon-name="arrow_right"
+          >
+            arrow_right
+          </span>
+        </i>
+      </div>
     </div>
     <div
-      class="items"
-    />
-  </div>
-  <div
-    class="StatusBar"
-  >
-    <div
-      class="leftSide"
-    />
-    <div
-      class="rightSide"
-    />
-  </div>
-  <div>
-    Some component
+      class="StatusBar"
+    >
+      <div
+        class="leftSide"
+        data-testid="status-bar-left"
+      />
+      <div
+        class="rightSide"
+        data-testid="status-bar-right"
+      />
+    </div>
   </div>
   <div
     class="Notifications flex column align-flex-end"

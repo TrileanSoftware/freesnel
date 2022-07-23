@@ -7,21 +7,17 @@ import rendererExtensionsInjectable from "../../../extensions/renderer-extension
 import currentlyInClusterFrameInjectable from "../../routes/currently-in-cluster-frame.injectable";
 import type { IObservableArray, ObservableSet } from "mobx";
 import { computed, observable, runInAction } from "mobx";
-import { renderFor } from "./renderFor";
 import React from "react";
 import { Router } from "react-router";
-import { Observer } from "mobx-react";
 import subscribeStoresInjectable from "../../kube-watch-api/subscribe-stores.injectable";
 import allowedResourcesInjectable from "../../cluster-frame-context/allowed-resources.injectable";
 import type { RenderResult } from "@testing-library/react";
-import { getByText, fireEvent } from "@testing-library/react";
+import { queryByText, fireEvent } from "@testing-library/react";
 import type { KubeResource } from "../../../common/rbac";
-import { Sidebar } from "../layout/sidebar";
 import type { DiContainer } from "@ogre-tools/injectable";
 import clusterStoreInjectable from "../../../common/cluster-store/cluster-store.injectable";
 import type { ClusterStore } from "../../../common/cluster-store/cluster-store";
 import mainExtensionsInjectable from "../../../extensions/main-extensions.injectable";
-import currentRouteComponentInjectable from "../../routes/current-route-component.injectable";
 import { pipeline } from "@ogre-tools/fp";
 import { flatMap, compact, join, get, filter, map, matches, last } from "lodash/fp";
 import preferenceNavigationItemsInjectable from "../+preferences/preferences-navigation/preference-navigation-items.injectable";
@@ -30,6 +26,7 @@ import type { MenuItemOpts } from "../../../main/menu/application-menu-items.inj
 import applicationMenuItemsInjectable from "../../../main/menu/application-menu-items.injectable";
 import type { MenuItemConstructorOptions, MenuItem } from "electron";
 import storesAndApisCanBeCreatedInjectable from "../../stores-apis-can-be-created.injectable";
+import type { NavigateToHelmCharts } from "../../../common/front-end-routing/routes/cluster/helm/charts/navigate-to-helm-charts.injectable";
 import navigateToHelmChartsInjectable from "../../../common/front-end-routing/routes/cluster/helm/charts/navigate-to-helm-charts.injectable";
 import hostedClusterInjectable from "../../cluster-frame-context/hosted-cluster.injectable";
 import { ClusterFrameContext } from "../../cluster-frame-context/cluster-frame-context";
@@ -44,16 +41,12 @@ import historyInjectable from "../../navigation/history.injectable";
 import type { MinimalTrayMenuItem } from "../../../main/tray/electron-tray/electron-tray.injectable";
 import electronTrayInjectable from "../../../main/tray/electron-tray/electron-tray.injectable";
 import applicationWindowInjectable from "../../../main/start-main-application/lens-window/application-window/application-window.injectable";
-import { Notifications } from "../notifications/notifications";
-import broadcastThatRootFrameIsRenderedInjectable from "../../frames/root-frame/broadcast-that-root-frame-is-rendered.injectable";
 import { getDiForUnitTesting as getRendererDi } from "../../getDiForUnitTesting";
 import { getDiForUnitTesting as getMainDi } from "../../../main/getDiForUnitTesting";
 import { overrideChannels } from "../../../test-utils/channel-fakes/override-channels";
-import trayIconPathsInjectable from "../../../main/tray/tray-icon-path.injectable";
 import assert from "assert";
 import { openMenu } from "react-select-event";
 import userEvent from "@testing-library/user-event";
-import { StatusBar } from "../status-bar/status-bar";
 import lensProxyPortInjectable from "../../../main/lens-proxy/lens-proxy-port.injectable";
 import type { Route } from "../../../common/front-end-routing/front-end-route-injection-token";
 import type { NavigateToRouteOptions } from "../../../common/front-end-routing/navigate-to-route-injection-token";
@@ -62,7 +55,12 @@ import type { LensMainExtension } from "../../../extensions/lens-main-extension"
 import type { LensExtension } from "../../../extensions/lens-extension";
 
 import extensionInjectable from "../../../extensions/extension-loader/extension/extension.injectable";
-import { TopBar } from "../layout/top-bar/top-bar";
+import { renderFor } from "./renderFor";
+import { RootFrame } from "../../frames/root-frame/root-frame";
+import { ClusterFrame } from "../../frames/cluster-frame/cluster-frame";
+import hostedClusterIdInjectable from "../../cluster-frame-context/hosted-cluster-id.injectable";
+import activeKubernetesClusterInjectable from "../../cluster-frame-context/active-kubernetes-cluster.injectable";
+import { catalogEntityFromCluster } from "../../../main/cluster-manager";
 
 type Callback = (dis: DiContainers) => void | Promise<void>;
 
@@ -83,6 +81,9 @@ export interface ApplicationBuilder {
       enable: EnableExtensions<LensMainExtension>;
       disable: DisableExtensions<LensMainExtension>;
     };
+
+    enable: (...extensions: { renderer: LensRendererExtension; main: LensMainExtension }[]) => void;
+    disable: (...extensions: { renderer: LensRendererExtension; main: LensMainExtension }[]) => void;
   };
 
   allowKubeResource: (resourceName: KubeResource) => ApplicationBuilder;
@@ -110,12 +111,13 @@ export interface ApplicationBuilder {
   };
 
   helmCharts: {
-    navigate: () => void;
+    navigate: NavigateToHelmCharts;
   };
 
   select: {
-    openMenu: (id: string) => void;
+    openMenu: (id: string) => ({ selectOption: (labelText: string) => void });
     selectOption: (menuId: string, labelText: string) => void;
+    getValue: (menuId: string) => string;
   };
 }
 
@@ -125,10 +127,7 @@ interface DiContainers {
 }
 
 interface Environment {
-  renderSidebar: () => React.ReactNode;
-  renderTopBar: () => React.ReactNode;
-  renderStatusBar: () => React.ReactNode;
-  beforeRender: () => void;
+  RootComponent: React.ElementType;
   onAllowKubeResource: () => void;
 }
 
@@ -166,17 +165,7 @@ export const getApplicationBuilder = () => {
 
   const environments = {
     application: {
-      renderSidebar: () => null,
-
-      renderTopBar: () => <TopBar />,
-
-      renderStatusBar: () => <StatusBar />,
-
-      beforeRender: () => {
-        const nofifyThatRootFrameIsRendered = rendererDi.inject(broadcastThatRootFrameIsRenderedInjectable);
-
-        nofifyThatRootFrameIsRendered();
-      },
+      RootComponent: RootFrame,
 
       onAllowKubeResource: () => {
         throw new Error(
@@ -186,10 +175,7 @@ export const getApplicationBuilder = () => {
     } as Environment,
 
     clusterFrame: {
-      renderSidebar: () => <Sidebar />,
-      renderStatusBar: () => null,
-      renderTopBar: () => null,
-      beforeRender: () => {},
+      RootComponent: ClusterFrame,
       onAllowKubeResource: () => {},
     } as Environment,
   };
@@ -214,11 +200,7 @@ export const getApplicationBuilder = () => {
   const traySetMenuItemsMock = jest.fn<any, [MinimalTrayMenuItem[]]>();
 
   mainDi.override(electronTrayInjectable, () => ({
-    start: () => {
-      const iconPaths = mainDi.inject(trayIconPathsInjectable);
-
-      trayMenuIconPath = iconPaths.normal;
-    },
+    start: () => {},
     stop: () => {},
     setMenuItems: traySetMenuItemsMock,
     setIconPath: (path) => {
@@ -257,6 +239,25 @@ export const getApplicationBuilder = () => {
         builder.beforeRender(addAndEnableExtensions);
       }
     };
+  };
+
+  const enableRendererExtension = enableExtensionsFor(rendererExtensionsState, rendererDi);
+  const enableMainExtension = enableExtensionsFor(mainExtensionsState, mainDi);
+  const disableRendererExtension = disableExtensionsFor(rendererExtensionsState, rendererDi);
+  const disableMainExtension = disableExtensionsFor(mainExtensionsState, mainDi);
+
+  const selectOptionFor = (menuId: string) => (labelText: string) => {
+    const menuOptions = rendered.baseElement.querySelector<HTMLElement>(
+      `.${menuId}-options`,
+    );
+
+    assert(menuOptions, `Could not find select options for menu with ID "${menuId}"`);
+
+    const option = queryByText(menuOptions, labelText);
+
+    assert(option, `Could not find select option with label "${labelText}" for menu with ID "${menuId}"`);
+
+    userEvent.click(option);
   };
 
   const builder: ApplicationBuilder = {
@@ -379,10 +380,10 @@ export const getApplicationBuilder = () => {
     },
 
     helmCharts: {
-      navigate: () => {
+      navigate: (parameters) => {
         const navigateToHelmCharts = rendererDi.inject(navigateToHelmChartsInjectable);
 
-        navigateToHelmCharts();
+        navigateToHelmCharts(parameters);
       },
     },
 
@@ -399,8 +400,14 @@ export const getApplicationBuilder = () => {
         accessibleNamespaces: [],
       } as unknown as Cluster;
 
+      rendererDi.override(activeKubernetesClusterInjectable, () =>
+        computed(() => catalogEntityFromCluster(clusterStub)),
+      );
+
       const namespaceStoreStub = {
         contextNamespaces: [],
+        items: [],
+        selectNamespaces: () => {},
       } as unknown as NamespaceStore;
 
       const clusterFrameContextFake = new ClusterFrameContext(
@@ -413,6 +420,7 @@ export const getApplicationBuilder = () => {
 
       rendererDi.override(namespaceStoreInjectable, () => namespaceStoreStub);
       rendererDi.override(hostedClusterInjectable, () => clusterStub);
+      rendererDi.override(hostedClusterIdInjectable, () => "irrelevant-hosted-cluster-id");
       rendererDi.override(clusterFrameContextInjectable, () => clusterFrameContextFake);
 
       // Todo: get rid of global state.
@@ -423,13 +431,29 @@ export const getApplicationBuilder = () => {
 
     extensions: {
       renderer: {
-        enable: enableExtensionsFor(rendererExtensionsState, rendererDi),
-        disable: disableExtensionsFor(rendererExtensionsState, rendererDi),
+        enable: enableRendererExtension,
+        disable: disableRendererExtension,
       },
 
       main: {
-        enable: enableExtensionsFor(mainExtensionsState, mainDi),
-        disable: disableExtensionsFor(mainExtensionsState, mainDi),
+        enable: enableMainExtension,
+        disable: disableMainExtension,
+      },
+
+      enable: (...extensions) => {
+        const rendererExtensions = extensions.map(extension => extension.renderer);
+        const mainExtensions = extensions.map(extension => extension.main);
+
+        enableRendererExtension(...rendererExtensions);
+        enableMainExtension(...mainExtensions);
+      },
+
+      disable: (...extensions) => {
+        const rendererExtensions = extensions.map(extension => extension.renderer);
+        const mainExtensions = extensions.map(extension => extension.main);
+
+        disableRendererExtension(...rendererExtensions);
+        disableMainExtension(...mainExtensions);
       },
     },
 
@@ -474,35 +498,17 @@ export const getApplicationBuilder = () => {
 
       await startFrame();
 
-      const render = renderFor(rendererDi);
-      const history = rendererDi.inject(historyInjectable);
-      const currentRouteComponent = rendererDi.inject(currentRouteComponentInjectable);
-
       for (const callback of beforeRenderCallbacks) {
         await callback(dis);
       }
 
-      environment.beforeRender();
+      const history = rendererDi.inject(historyInjectable);
+
+      const render = renderFor(rendererDi);
 
       rendered = render(
         <Router history={history}>
-          {environment.renderSidebar()}
-          {environment.renderTopBar()}
-          {environment.renderStatusBar()}
-
-          <Observer>
-            {() => {
-              const Component = currentRouteComponent.get();
-
-              if (!Component) {
-                return null;
-              }
-
-              return <Component />;
-            }}
-          </Observer>
-
-          <Notifications />
+          <environment.RootComponent />
         </Router>,
       );
 
@@ -511,25 +517,33 @@ export const getApplicationBuilder = () => {
 
     select: {
       openMenu: (menuId) => {
-        const selector = rendered.container.querySelector<HTMLElement>(
+        const select = rendered.baseElement.querySelector<HTMLElement>(
           `#${menuId}`,
         );
 
-        assert(selector);
+        assert(select, `Could not find select with ID "${menuId}"`);
 
-        openMenu(selector);
+        openMenu(select);
+
+        return {
+          selectOption: selectOptionFor(menuId),
+        };
       },
 
-      selectOption: (menuId, labelText) => {
-        const menuOptions = rendered.baseElement.querySelector<HTMLElement>(
-          `.${menuId}-options`,
+      selectOption: (menuId, labelText) => selectOptionFor(menuId)(labelText),
+
+      getValue: (menuId) => {
+        const select = rendered.baseElement.querySelector<HTMLInputElement>(
+          `#${menuId}`,
         );
 
-        assert(menuOptions);
+        assert(select, `Could not find select with ID "${menuId}"`);
 
-        const option = getByText(menuOptions, labelText);
+        const controlElement = select.closest(".Select__control");
 
-        userEvent.click(option);
+        assert(controlElement, `Could not find select value for menu with ID "${menuId}"`);
+
+        return controlElement.textContent || "";
       },
     },
   };
